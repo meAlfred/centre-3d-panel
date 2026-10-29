@@ -9,7 +9,7 @@ RUN npm run build
 FROM nginx:1.28-alpine
 LABEL org.opencontainers.image.title="centre-web" \
       org.opencontainers.image.description="3D dashboard UI for centre" \
-      org.opencontainers.image.source="https://github.com/meAlfred/centre" \
+      org.opencontainers.image.source="https://github.com/meAlfred/centre-3d-panel" \
       org.opencontainers.image.licenses="GPL-3.0-or-later"
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html

@@ -16,7 +16,7 @@ You need Docker with Compose v2 on a Linux host (x86-64 or ARM64).
 
 ```bash
 mkdir centre && cd centre
-curl -fsSLO https://raw.githubusercontent.com/meAlfred/centre/main/compose.yaml
+curl -fsSLO https://raw.githubusercontent.com/meAlfred/centre-3d-panel/main/compose.yaml
 docker compose up -d
 ```
 
