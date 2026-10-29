@@ -1,0 +1,10 @@
+# Optional Intel iGPU load (intel_gpu_top). amd64 only.
+#   docker compose -f compose.yaml -f compose.igpu.yaml up -d
+services:
+  agent:
+    environment:
+      ENABLE_IGPU: "1"
+    cap_add:
+      - PERFMON
+    devices:
+      - /dev/dri:/dev/dri

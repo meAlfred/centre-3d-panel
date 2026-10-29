@@ -1,0 +1,37 @@
+/* AFK animation: the interface steps back, the scene takes the whole screen. */
+.app .topbar,.app .component-nav,.app .bottom-bar,.app .demo-banner,.app .connection-banner,.overview-panel,.focus-panel-shell,.scene-caption,.scene-key{transition:opacity .7s ease,filter .7s ease}
+.app.cinematic .topbar,.app.cinematic .component-nav,.app.cinematic .bottom-bar,.app.cinematic .demo-banner,.app.cinematic .connection-banner{opacity:0;filter:blur(6px);pointer-events:none}
+.app.cinematic .overview-panel,.app.cinematic .focus-panel-shell,.app.cinematic .scene-caption,.app.cinematic .scene-key,.app.cinematic .fallback-note{opacity:0!important;pointer-events:none!important}
+.app.cinematic .scene-space{position:fixed!important;inset:0!important;margin:0!important;z-index:60;cursor:none}
+.app.cinematic .scene-space::after{background:radial-gradient(ellipse at 50% 50%,transparent 45%,#030101cc 100%)!important}
+.cine-fade{position:absolute;inset:0;background:#070202;opacity:0;pointer-events:none;z-index:6}
+.cinema{position:absolute;inset:0;pointer-events:none;z-index:7;animation:cine-in .8s ease both}
+.cine-bar{position:absolute;left:0;right:0;height:7.5vh;background:#000;animation:cine-bar .9s cubic-bezier(.2,.8,.2,1) both}
+.cine-bar.top{top:0;transform-origin:top}.cine-bar.bottom{bottom:0;transform-origin:bottom}
+.cine-title{position:absolute;left:44px;top:calc(7.5vh + 26px);display:flex;flex-direction:column;gap:8px}
+.cine-title span{font:12px ui-monospace,SFMono-Regular,monospace;letter-spacing:3px;color:#ff5a48;display:flex;align-items:center;gap:10px}
+.cine-title span::before{content:"";width:8px;height:8px;border-radius:50%;background:#ff3020;box-shadow:0 0 10px #ff3020;animation:blink 1.4s ease-in-out infinite}
+.cine-title strong{font-size:30px;font-weight:500;letter-spacing:-.8px;color:#fbe9df;text-shadow:0 2px 24px #000;animation:cine-title 6s ease both}
+.cine-hint{position:absolute;right:44px;top:calc(7.5vh + 30px);font:12px ui-monospace,monospace;letter-spacing:1px;color:#c79a8d;animation:cine-hint 5s ease both}
+.cine-strip{position:absolute;left:50%;bottom:calc(7.5vh + 22px);transform:translateX(-50%);display:flex;gap:1px;max-width:calc(100% - 60px);background:#ff5a4822;border:1px solid #c2503c55;border-radius:8px;overflow:hidden;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 60px #000c}
+.cine-cell{position:relative;width:150px;padding:11px 14px 0;background:#120604d9;display:flex;flex-direction:column;gap:3px}
+.cine-cell>span{font:10px ui-monospace,monospace;letter-spacing:1.6px;color:#c3978a;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cine-cell b{font:400 20px ui-monospace,SFMono-Regular,monospace;letter-spacing:-.8px;color:#fbe8dc;font-variant-numeric:tabular-nums}
+.cine-cell b small{font-size:10px;letter-spacing:0;color:#a8877c;margin-left:4px}
+.cine-spark{display:block;width:calc(100% + 28px);margin:4px -14px 0;height:34px}
+.cine-spark path{fill:#ff4a3a2e;stroke:#ff6a55;stroke-width:1.3;vector-effect:non-scaling-stroke}
+.cine-cell.warning b{color:#f6b54a}.cine-cell.warning .cine-spark path{stroke:#f0a020;fill:#f0a0202a}
+.cine-cell.critical b{color:#ff5a48}.cine-cell.critical .cine-spark path{stroke:#ff2a1f;fill:#ff2a1f3a}
+.cine-launch svg{filter:drop-shadow(0 0 6px #ff4a3a88)}
+@keyframes cine-in{from{opacity:0}to{opacity:1}}
+@keyframes cine-bar{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes cine-hint{0%,70%{opacity:1}100%{opacity:0}}
+@keyframes cine-title{0%{opacity:0;transform:translateY(8px)}12%,100%{opacity:1;transform:none}}
+@media(max-width:800px){
+ .cine-bar{height:5vh}
+ .cine-title{left:20px;top:calc(5vh + 16px)}.cine-title strong{font-size:22px}
+ .cine-hint{display:none}
+ .cine-strip{bottom:calc(5vh + 10px);display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));width:calc(100% - 20px);max-width:none}
+ .cine-cell{width:auto;padding:6px 8px 0;gap:1px}.cine-cell>span{font-size:9px;letter-spacing:1px}.cine-cell b{font-size:14px}.cine-cell b small{font-size:9px}.cine-spark{height:16px;margin:2px -8px 0;width:calc(100% + 16px)}
+}
+@media(prefers-reduced-motion:reduce){.cinema{display:none}}

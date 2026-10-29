@@ -1,0 +1,18 @@
+import type {Snapshot} from './types';
+const psi=(n=0)=>({some:{avg10:n,avg60:n*.7,avg300:n*.2,total_us:Math.round(n*100000)},full:{avg10:n*.12,avg60:n*.05,avg300:n*.01,total_us:0}});
+const query=new URLSearchParams(typeof location==='undefined'?'':location.search);
+// Demo-only switches: ?mock=1&containers=29&hdd=1&norpm=1
+const high=query.get('load')==='high';
+const fixedCpu=Number(query.get('cpu'))||0,fixedTemp=Number(query.get('temp'))||0;
+const extra=Math.max(0,Math.min(60,Number(query.get('containers'))||0)),withHdd=query.get('hdd')==='1',noRpm=query.get('norpm')==='1';
+export function mockSnapshot(sequence:number):Snapshot{
+ const t=sequence*2,burst=high?1:Math.max(0,Math.sin(t/18))**10, cpu=fixedCpu||Math.min(99,20+Math.sin(t/9)*12+Math.random()*6+burst*72), mem=6500+Math.sin(t/15)*900;
+ const state={status:'ok' as const,observed_at:Date.now()/1000,age_s:0,error:null};
+ const warning=Math.floor(t/24)%3===1;
+ return {schema_version:'1.0',ts:Date.now()/1000,sequence,mock:true,host:{name:'homelab',model:'Demo Mini PC',os:'Debian 13 · demo',uptime_s:934221+t,load:[.42,.51,.48]},
+ cpu:{model:'Intel Core i7-8700',cores:6,threads:12,usage_total:cpu,per_core:Array.from({length:6},(_,i)=>Math.min(100,cpu+Math.sin(t/4+i)*16)),freq_mhz:2600+cpu*20,temp_c:fixedTemp||40+cpu*.3,temp_max_c:100,pressure_some_60s:0,pressure:psi(),top_processes:[{pid:812,name:'dockerd',cpu:4,mem_mb:130},{pid:1450,name:'node',cpu:2,mem_mb:312}]},
+ memory:{total_mb:16384,used_mb:mem,cached_mb:4100,available_mb:16384-mem,free_mb:1600,buffers_mb:230,swap_total_mb:2048,swap_used_mb:0,pressure_some_60s:0,pressure:psi(),slots_status:'ok',slots:[0,1,2,3].map(index=>({index,populated:index<2,size_mb:index<2?8192:null,type:index<2?'DDR4':null,speed_mts:index<2?2666:null,locator:`DIMM ${index+1}`})),top_processes:[{pid:1450,name:'node',cpu:2,mem_mb:312}]},
+ disks:[{id:'sda',kind:'ssd',model:'SATA SSD 240 GB · demo',bay:0,size_gb:240,used_gb:96,temp_c:34,read_mbs:Math.max(0,Math.sin(t/5)*4)+burst*45,write_mbs:Math.max(0,Math.sin(t/7)*18)+burst*70,iops:140+Math.sin(t/6)*100,smart:{health:'PASSED',power_on_hours:1420,wear_pct:3,tbw:.149,temp_c:34,status:'ok',age_s:0,observed_at:Date.now()/1000},directories:[{path:'/var/lib/docker',size_gb:48},{path:'/home',size_gb:12}]},withHdd?{id:'sdb',kind:'hdd',model:'NAS HDD 4 TB · demo',bay:1,size_gb:4000,used_gb:1320,temp_c:36,read_mbs:Math.max(0,Math.sin(t/4)*60),write_mbs:Math.max(0,Math.sin(t/9)*40),iops:Math.max(0,90+Math.sin(t/5)*110),smart:{health:'PASSED',power_on_hours:310,wear_pct:null,tbw:null,temp_c:36,status:'ok',age_s:0,observed_at:Date.now()/1000}}:{id:null,kind:'empty',bay:1,model:null,size_gb:null,used_gb:null,temp_c:null,read_mbs:null,write_mbs:null,iops:null,smart:null}],
+ network:[{iface:'eno1',rx_mbs:Math.max(0,2+Math.sin(t/3)*2)+burst*110,tx_mbs:Math.max(0,1+Math.sin(t/6)*1)+burst*60,link_mbps:1000,link_up:true},{iface:'tailscale0',rx_mbs:.1,tx_mbs:.2,link_mbps:null,link_up:true}],fans:noRpm?[]:[{name:'cpu_fan',rpm:Math.round(900+cpu*8)}],
+ docker:['adguard','dockge','uptime-kuma','docmost','nginx','postgres','redis','telegram-bot',...Array.from({length:Math.max(0,extra-8)},(_,i)=>`service-${i+1}`)].map((name,i)=>({id:`demo${i}`,name,state:warning&&i===4?'restarting':'running',cpu:Math.max(0,Math.sin(t/6+i)*3),mem_mb:80+(i*97)%520,uptime_s:93422+t,health:warning&&i===4?'unhealthy':null,error:null,rx_mbs:.05,tx_mbs:.08})),services:[{id:'demo-docmost',name:'Docmost',up:true,latency_ms:24,uptime_24h:100}],sources:{host:state,docker:state,smart:state,kuma:state,directories:state},warnings:[],capabilities:{dmi:true,fans:true,cpu_temperature:true,igpu:false,directory_sizes:true,network_top_consumers:true,raid:false}};
+}

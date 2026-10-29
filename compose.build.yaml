@@ -1,0 +1,11 @@
+# Build the images from this checkout instead of pulling them:
+#   docker compose -f compose.yaml -f compose.build.yaml up -d --build
+services:
+  agent:
+    image: centre-agent:local
+    build: .
+  web:
+    image: centre-web:local
+    build:
+      context: .
+      dockerfile: Dockerfile.web

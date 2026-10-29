@@ -1,0 +1,100 @@
+# centre — 3D hardware dashboard for a single Linux host.
+#   docker compose up -d        →  http://<server-ip>:9110
+# Settings live in .env (copy .env.example). Everything is optional.
+name: centre
+
+services:
+  agent:
+    image: ghcr.io/mealfred/centre-agent:${CENTRE_VERSION:-latest}
+    restart: unless-stopped
+    # Host network: the agent must see the host's interfaces, not a container's.
+    # It listens on 127.0.0.1 only; the web container is the public face.
+    network_mode: host
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - DAC_READ_SEARCH   # directory sizes under /var/lib/docker, /home, …
+      - SYS_RAWIO         # SMART on SATA/SAS/USB drives
+      - SYS_ADMIN         # SMART on NVMe drives (remove if you have none)
+    # Read-only access to whole-disk block devices for smartctl. New drives are
+    # picked up automatically because /dev is mounted, not individual devices.
+    device_cgroup_rules:
+      - "b 3:* r"     # IDE (hd*)
+      - "b 8:* r"     # SATA / SAS / USB (sd*), first 16 disks
+      - "b 65:* r"    # sd* 17–32
+      - "b 259:* r"   # NVMe namespaces
+    environment:
+      BIND_ADDRESS: 127.0.0.1
+      PORT: ${AGENT_PORT:-9108}
+      SAMPLE_INTERVAL: "2"
+      SMART_INTERVAL: "60"
+      HOST_NAME: ${HOST_NAME:-}
+      PUBLIC_HOST: ${PUBLIC_HOST:-}
+      ENABLE_IGPU: ${ENABLE_IGPU:-0}
+      KUMA_METRICS_URL: ${KUMA_METRICS_URL:-}
+      KUMA_API_KEY: ${KUMA_API_KEY:-}
+      KUMA_USERNAME: ${KUMA_USERNAME:-}
+      KUMA_PASSWORD: ${KUMA_PASSWORD:-}
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/sys:ro
+      # Mounted a second time outside /sys: Docker's AppArmor profile hides
+      # /sys/firmware, and the RAM layout lives in the SMBIOS table there.
+      - /sys/firmware:/host/firmware:ro
+      - /:/host/root:ro,rslave
+      - /dev:/host/dev:ro
+      # Read-only, but Docker socket access is still powerful. See README for
+      # running through a socket proxy instead.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config:/config:ro
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,urllib.request; urllib.request.urlopen('http://127.0.0.1:'+os.environ['PORT']+'/healthz',timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+  web:
+    image: ghcr.io/mealfred/centre-web:${CENTRE_VERSION:-latest}
+    restart: unless-stopped
+    network_mode: host
+    user: "101:101"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      LISTEN_ADDRESS: ${LISTEN_ADDRESS:-0.0.0.0}
+      WEB_PORT: ${WEB_PORT:-9110}
+      AGENT_PORT: ${AGENT_PORT:-9108}
+      NGINX_ENVSUBST_FILTER: LISTEN_ADDRESS|WEB_PORT|AGENT_PORT
+    depends_on:
+      agent:
+        condition: service_healthy
+    tmpfs:
+      - /var/cache/nginx:uid=101,gid=101,mode=0755,size=32m
+      - /var/run:uid=101,gid=101,mode=0755,size=2m
+      - /tmp:uid=101,gid=101,mode=1777,size=16m
+      - /etc/nginx/conf.d:uid=101,gid=101,mode=0755,size=2m
+    healthcheck:
+      test: ["CMD-SHELL", "a=$${LISTEN_ADDRESS}; [ \"$$a\" = 0.0.0.0 ] && a=127.0.0.1; wget -q -O /dev/null http://$$a:$${WEB_PORT}/healthz"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"

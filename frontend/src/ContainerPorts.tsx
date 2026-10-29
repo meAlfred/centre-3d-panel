@@ -1,0 +1,6 @@
+import type {Container} from './types';
+import {portAccess} from './containerPorts';
+export function ContainerPorts({container,serverHost}:{container:Container;serverHost?:string|null}){
+ const ports=container.ports??[],host=serverHost&&!serverHost.startsWith('127.')?serverHost:location.hostname;
+ return <section className="container-ports"><h3>Ports & web UIs</h3>{ports.length?ports.map((port,i)=>{const access=portAccess(port,host);return <div className="port-entry" key={`${port.container_port}-${port.host_ip}-${port.host_port}-${i}`}><strong>{port.host_port!=null?`${port.host_port} → `:''}{port.container_port}<small> / {port.protocol.toUpperCase()}</small></strong><span>{access.label}</span>{container.state==='running'&&access.urls.length>0&&<div>{access.urls.map(url=><a key={url.label} href={url.href} target="_blank" rel="noopener noreferrer" aria-label={`Open ${container.name??container.id} over ${url.label}, port ${port.host_port}`}>{url.label} ↗</a>)}</div>}</div>}):<p className="hint">{container.network_mode==='host'?'Host network: Docker does not report the app’s ports.':'Docker reports no ports for this container.'}</p>}{ports.some(p=>p.host_port&&p.protocol==='tcp')&&<p className="hint">HTTP / HTTPS opens the port in a new tab if the service has a web UI.</p>}</section>;
+}

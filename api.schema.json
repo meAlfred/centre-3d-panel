@@ -1,0 +1,1118 @@
+{
+  "$defs": {
+    "CPU": {
+      "additionalProperties": true,
+      "properties": {
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Model"
+        },
+        "cores": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cores"
+        },
+        "threads": {
+          "title": "Threads",
+          "type": "integer"
+        },
+        "usage_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Usage Total"
+        },
+        "per_core": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Per Core",
+          "type": "array"
+        },
+        "per_thread": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Per Thread",
+          "type": "array"
+        },
+        "core_map": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Core Map",
+          "type": "array"
+        },
+        "freq_mhz": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Freq Mhz"
+        },
+        "temp_c": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Temp C"
+        },
+        "temp_max_c": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Temp Max C"
+        },
+        "pressure_some_60s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pressure Some 60S"
+        },
+        "pressure": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object"
+          },
+          "title": "Pressure",
+          "type": "object"
+        },
+        "top_processes": {
+          "items": {
+            "$ref": "#/$defs/Process"
+          },
+          "title": "Top Processes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "model",
+        "cores",
+        "threads",
+        "usage_total",
+        "per_core",
+        "per_thread",
+        "core_map",
+        "freq_mhz",
+        "temp_c",
+        "temp_max_c",
+        "pressure_some_60s",
+        "pressure",
+        "top_processes"
+      ],
+      "title": "CPU",
+      "type": "object"
+    },
+    "Container": {
+      "additionalProperties": true,
+      "properties": {
+        "ports": {
+          "items": {
+            "$ref": "#/$defs/ContainerPort"
+          },
+          "title": "Ports",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Name"
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "State"
+        },
+        "cpu": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cpu"
+        },
+        "mem_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mem Mb"
+        },
+        "uptime_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Uptime S"
+        },
+        "health": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Health"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Error"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "state",
+        "cpu",
+        "mem_mb",
+        "uptime_s",
+        "health",
+        "error"
+      ],
+      "title": "Container",
+      "type": "object"
+    },
+    "ContainerPort": {
+      "additionalProperties": true,
+      "properties": {
+        "container_port": {
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Container Port",
+          "type": "integer"
+        },
+        "protocol": {
+          "enum": [
+            "tcp",
+            "udp",
+            "sctp"
+          ],
+          "title": "Protocol",
+          "type": "string"
+        },
+        "host_ip": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Host Ip"
+        },
+        "host_port": {
+          "anyOf": [
+            {
+              "maximum": 65535,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Host Port"
+        }
+      },
+      "required": [
+        "container_port",
+        "protocol"
+      ],
+      "title": "ContainerPort",
+      "type": "object"
+    },
+    "Disk": {
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Id"
+        },
+        "kind": {
+          "enum": [
+            "ssd",
+            "hdd",
+            "empty",
+            "unknown",
+            "unavailable"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "bay": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Bay"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "size_gb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Gb"
+        },
+        "used_gb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Used Gb"
+        },
+        "temp_c": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Temp C"
+        },
+        "read_mbs": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Read Mbs"
+        },
+        "write_mbs": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Write Mbs"
+        },
+        "iops": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Iops"
+        },
+        "smart": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Smart"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "bay"
+      ],
+      "title": "Disk",
+      "type": "object"
+    },
+    "Host": {
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Name"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "os": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Os"
+        },
+        "uptime_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Uptime S"
+        },
+        "load": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Load",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "os",
+        "uptime_s",
+        "load"
+      ],
+      "title": "Host",
+      "type": "object"
+    },
+    "Memory": {
+      "additionalProperties": true,
+      "properties": {
+        "total_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Total Mb"
+        },
+        "used_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Used Mb"
+        },
+        "cached_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cached Mb"
+        },
+        "available_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Available Mb"
+        },
+        "swap_total_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Swap Total Mb"
+        },
+        "swap_used_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Swap Used Mb"
+        },
+        "pressure_some_60s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pressure Some 60S"
+        },
+        "pressure": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object"
+          },
+          "title": "Pressure",
+          "type": "object"
+        },
+        "slots": {
+          "items": {
+            "$ref": "#/$defs/Slot"
+          },
+          "title": "Slots",
+          "type": "array"
+        },
+        "slots_status": {
+          "enum": [
+            "ok",
+            "unavailable"
+          ],
+          "title": "Slots Status",
+          "type": "string"
+        },
+        "top_processes": {
+          "items": {
+            "$ref": "#/$defs/Process"
+          },
+          "title": "Top Processes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "total_mb",
+        "used_mb",
+        "cached_mb",
+        "available_mb",
+        "swap_total_mb",
+        "swap_used_mb",
+        "pressure_some_60s",
+        "pressure",
+        "slots",
+        "slots_status",
+        "top_processes"
+      ],
+      "title": "Memory",
+      "type": "object"
+    },
+    "Network": {
+      "additionalProperties": true,
+      "properties": {
+        "iface": {
+          "title": "Iface",
+          "type": "string"
+        },
+        "rx_mbs": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rx Mbs"
+        },
+        "tx_mbs": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Tx Mbs"
+        },
+        "link_mbps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Link Mbps"
+        },
+        "link_up": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Link Up"
+        }
+      },
+      "required": [
+        "iface",
+        "rx_mbs",
+        "tx_mbs",
+        "link_mbps",
+        "link_up"
+      ],
+      "title": "Network",
+      "type": "object"
+    },
+    "Process": {
+      "additionalProperties": true,
+      "properties": {
+        "pid": {
+          "title": "Pid",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "cpu": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Cpu"
+        },
+        "mem_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mem Mb"
+        }
+      },
+      "required": [
+        "pid",
+        "name",
+        "cpu",
+        "mem_mb"
+      ],
+      "title": "Process",
+      "type": "object"
+    },
+    "Service": {
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "up": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Up"
+        },
+        "latency_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Latency Ms"
+        },
+        "uptime_24h": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Uptime 24H"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "up",
+        "latency_ms",
+        "uptime_24h"
+      ],
+      "title": "Service",
+      "type": "object"
+    },
+    "Slot": {
+      "additionalProperties": true,
+      "properties": {
+        "index": {
+          "title": "Index",
+          "type": "integer"
+        },
+        "populated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Populated"
+        },
+        "size_mb": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Size Mb"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Locator"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Type"
+        },
+        "speed_mts": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Speed Mts"
+        }
+      },
+      "required": [
+        "index",
+        "populated",
+        "size_mb",
+        "locator",
+        "type",
+        "speed_mts"
+      ],
+      "title": "Slot",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": true,
+      "properties": {
+        "status": {
+          "enum": [
+            "starting",
+            "ok",
+            "error",
+            "disabled",
+            "stale"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "age_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Age S"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "Source",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "service_host": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Service Host"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "number"
+    },
+    "sequence": {
+      "minimum": 1,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "mock": {
+      "const": false,
+      "default": false,
+      "title": "Mock",
+      "type": "boolean"
+    },
+    "host": {
+      "$ref": "#/$defs/Host"
+    },
+    "cpu": {
+      "$ref": "#/$defs/CPU"
+    },
+    "memory": {
+      "$ref": "#/$defs/Memory"
+    },
+    "disks": {
+      "items": {
+        "$ref": "#/$defs/Disk"
+      },
+      "title": "Disks",
+      "type": "array"
+    },
+    "network": {
+      "items": {
+        "$ref": "#/$defs/Network"
+      },
+      "title": "Network",
+      "type": "array"
+    },
+    "fans": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Fans",
+      "type": "array"
+    },
+    "docker": {
+      "items": {
+        "$ref": "#/$defs/Container"
+      },
+      "title": "Docker",
+      "type": "array"
+    },
+    "services": {
+      "items": {
+        "$ref": "#/$defs/Service"
+      },
+      "title": "Services",
+      "type": "array"
+    },
+    "sources": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Source"
+      },
+      "title": "Sources",
+      "type": "object"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "capabilities": {
+      "additionalProperties": {
+        "type": "boolean"
+      },
+      "title": "Capabilities",
+      "type": "object"
+    },
+    "directories": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Directories"
+    },
+    "raids": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Raids",
+      "type": "array"
+    },
+    "igpu": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Igpu"
+    }
+  },
+  "required": [
+    "ts",
+    "sequence",
+    "host",
+    "cpu",
+    "memory",
+    "disks",
+    "network",
+    "fans",
+    "docker",
+    "services",
+    "sources",
+    "warnings",
+    "capabilities"
+  ],
+  "title": "Snapshot",
+  "type": "object"
+}

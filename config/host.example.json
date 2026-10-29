@@ -1,0 +1,9 @@
+{
+  "hostname": "my-server",
+  "model": "My custom build",
+  "directory_roots": ["/var/lib/docker", "/home", "/srv"],
+  "bays": [
+    {"bay": 0, "disk_identity": "naa.5000000000000000"},
+    {"bay": 1, "disk_identity": null}
+  ]
+}

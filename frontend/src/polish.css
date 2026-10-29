@@ -1,0 +1,76 @@
+/* v2.7 visual pass. Loaded last; only adds or refines, never changes layout breakpoints. */
+.value strong,.hud strong,.gauge strong,.top-ticker b,.detail-row>b,.chart-legend b{font-variant-numeric:tabular-nums}
+
+/* Scene framing: soft vignette and a readable caption corner. */
+.app:not(.flat-mode) .scene-space::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(ellipse at 50% 45%,transparent 52%,#0503038c 100%),linear-gradient(180deg,#0a050499 0,transparent 20%,transparent 82%,#0a05047a 100%)}
+.flat-mode .scene-space::after{display:none}
+.scene-caption h1{font-size:26px;font-weight:500;text-shadow:0 2px 18px #000c}
+.scene-caption .eyebrow{color:#e08f80}
+.pulse-line{display:block;width:150px;height:22px;margin:2px 0 6px;overflow:visible}
+.pulse-line path{fill:none;stroke:#ff5142;stroke-width:1.5;stroke-linejoin:round;stroke-dasharray:36 190;animation:pulse-run linear infinite;filter:drop-shadow(0 0 4px #ff3b2ecc)}
+.pulse-line path.pulse-ghost{stroke:#ff51422e;stroke-dasharray:none;animation:none;filter:none}
+@keyframes pulse-run{from{stroke-dashoffset:226}to{stroke-dashoffset:0}}
+
+/* HUD cards: corner brackets, load line, history spark, entrance. */
+.hud{overflow:visible;animation:hud-in .45s cubic-bezier(.2,.8,.2,1) both}
+.hud::before,.hud::after{content:"";position:absolute;width:9px;height:9px;border:1px solid #ff6a55;opacity:.75;pointer-events:none;transition:all .15s}
+.hud::before{top:-4px;right:-4px;border-left:0;border-bottom:0}
+.hud::after{bottom:-4px;right:-4px;border-left:0;border-top:0}
+.hud:hover::before{top:-6px;right:-6px}.hud:hover::after{bottom:-6px;right:-6px}
+.hud>span i{box-shadow:0 0 8px 2px #ff4a3a99;animation:blink 2.4s ease-in-out infinite}
+.hud-spark{display:block;width:100%;height:22px;margin-top:7px}
+.hud-spark path{fill:none;stroke:#ff6a55;stroke-width:1.4;vector-effect:non-scaling-stroke;opacity:.9}
+.hud-level{display:block;height:2px;margin:8px -13px -10px;background:#ff5a4826;position:relative}
+.hud-level::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--level,0%);background:linear-gradient(90deg,#b3261e,#ff6a55);box-shadow:0 0 8px #ff4a3a;transition:width .8s ease}
+.hud-level.warning::after{background:linear-gradient(90deg,#b3761e,#f0a020);box-shadow:0 0 8px #f0a020}
+.hud-level.critical::after{background:#ff2a1f;box-shadow:0 0 10px #ff2a1f}
+@keyframes hud-in{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes blink{50%{opacity:.35}}
+
+/* Gauges and usage bars in the overview panel. */
+.gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 20px}
+.gauge{position:relative;display:flex;flex-direction:column;align-items:center;padding:0;color:#e9d8cf}
+.gauge svg{width:100%;max-width:84px;aspect-ratio:1;overflow:visible}
+.gauge circle{fill:none;stroke-width:4.5;stroke-linecap:round}
+.gauge-track{stroke:#ffffff10}
+.gauge-fill{stroke:currentColor;transition:stroke-dasharray .8s ease;filter:drop-shadow(0 0 5px currentColor)}
+.gauge.ok .gauge-fill{color:#ff5a48}.gauge.warning .gauge-fill{color:#f0a020}.gauge.critical .gauge-fill{color:#ff2a1f}.gauge.unknown .gauge-fill{color:transparent}
+.gauge strong{position:absolute;top:0;left:0;right:0;aspect-ratio:1;max-width:84px;margin:0 auto;display:flex;align-items:center;justify-content:center;font:400 19px ui-monospace,SFMono-Regular,monospace;letter-spacing:-1px;color:#f6e6dc}
+.gauge strong small{font-size:10px;letter-spacing:0;color:#a8877c;margin-left:2px;align-self:center;padding-top:5px}
+.gauge>span{font:11px ui-monospace,monospace;letter-spacing:1.4px;color:#b08e84;margin-top:-6px;text-transform:uppercase}
+.gauge:hover>span{color:#ff8a78}
+.usage-bar{margin:13px 0}
+.usage-bar>div{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:#a48a83}
+.usage-bar b{font:12px ui-monospace,monospace;font-weight:400;color:#e2d0c8}
+.usage-bar>i{display:block;height:4px;margin-top:7px;background:#ffffff0d;border-radius:2px;overflow:hidden}
+.usage-bar em{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#8f1f18,#ff5a48);transition:width .8s ease}
+.usage-bar.warning em{background:linear-gradient(90deg,#8f5e18,#f0a020)}.usage-bar.critical em{background:#ff2a1f}
+.overview-panel h2{margin-bottom:20px}
+
+/* Live ticker in the top bar: stays visible while a component panel is open. */
+.top-ticker{display:flex;align-items:center;gap:22px;margin-left:34px;font:12px ui-monospace,SFMono-Regular,monospace;color:#8d7570;letter-spacing:.6px}
+.top-ticker span{display:flex;align-items:baseline;gap:7px;white-space:nowrap}
+.top-ticker b{font-weight:400;font-size:14px;color:#f1ddd2;min-width:3.2ch;text-align:right}
+.top-ticker .warning b{color:#f0a020}.top-ticker .critical b{color:#ff4a3a}
+.brand-mark i{animation:brand 2.8s ease-in-out infinite;transform-origin:center}
+.brand-mark i:nth-child(2){animation-delay:.25s}.brand-mark i:nth-child(3){animation-delay:.5s}
+@keyframes brand{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.55)}}
+.status-pill.ok{box-shadow:0 0 18px #da4f4826;border-color:#da4f4855}
+.status-pill i{box-shadow:0 0 8px currentColor}
+
+/* Glass panels over the scene (desktop: blur over WebGL is costly on phones). */
+@media(min-width:801px){
+ .overview-panel{background:#130907b8;backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border-color:#c2503c59;box-shadow:0 24px 70px #000a,inset 0 1px 0 #ffffff0d}
+ .focus-panel-shell>.detail-panel{background:#140907c9;backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);box-shadow:0 24px 70px #000a,inset 0 1px 0 #ffffff0d}
+ .hud{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);background:#180a07eb}
+ .overview-panel{max-height:88%}
+ .overview-panel .plot{height:62px}
+ .overview-panel .tiny-code{display:none}
+ .overview-panel .rule{margin:16px 0}
+ .overview-panel .network-summary{margin-top:16px}
+ .overview-values{display:none}
+}
+@media(max-width:1250px){.top-ticker{display:none}}
+@media(max-width:800px){.gauges,.usage-bars,.pulse-line{display:none}.hud-spark{display:none}}
+.component-nav>button.selected svg{filter:drop-shadow(0 0 6px #ff4a3a)}
+.component-nav>button{transition:color .15s,background .15s}

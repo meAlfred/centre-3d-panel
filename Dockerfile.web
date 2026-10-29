@@ -1,0 +1,15 @@
+# The site is static, so it is built once on the build machine for every platform.
+FROM --platform=$BUILDPLATFORM node:22-alpine AS build
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend/ ./
+RUN npm run build
+
+FROM nginx:1.28-alpine
+LABEL org.opencontainers.image.title="centre-web" \
+      org.opencontainers.image.description="3D dashboard UI for centre" \
+      org.opencontainers.image.source="https://github.com/meAlfred/centre" \
+      org.opencontainers.image.licenses="GPL-3.0-or-later"
+COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY --from=build /app/dist /usr/share/nginx/html

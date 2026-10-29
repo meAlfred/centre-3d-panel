@@ -1,0 +1,33 @@
+server {
+    listen ${LISTEN_ADDRESS}:${WEB_PORT};
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+    server_tokens off;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy no-referrer always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header Permissions-Policy "accelerometer=(self), gyroscope=(self), magnetometer=(self)" always;
+
+    location = /healthz { access_log off; return 200 'ok'; add_header Content-Type text/plain; }
+    location = /api/stream {
+        proxy_pass http://127.0.0.1:${AGENT_PORT};
+        proxy_http_version 1.1;
+        proxy_set_header Connection '';
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 30s;
+        gzip off;
+    }
+    location /api/ {
+        proxy_pass http://127.0.0.1:${AGENT_PORT};
+        proxy_set_header Host $host;
+        proxy_read_timeout 15s;
+        add_header Cache-Control no-store;
+    }
+    location /assets/ { try_files $uri =404; expires 1y; add_header Cache-Control 'public, immutable'; }
+    location / { try_files $uri $uri/ /index.html; add_header Cache-Control no-cache; add_header Permissions-Policy "accelerometer=(self), gyroscope=(self), magnetometer=(self)" always; }
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+    gzip_min_length 1024;
+}
